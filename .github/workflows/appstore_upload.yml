@@ -2,15 +2,6 @@ name: Upload iOS IPA to App Store
 
 on:
   workflow_dispatch:
-    inputs:
-      ipa_path:
-        description: 'Path to IPA (relative to repo root, e.g. build/MyApp.ipa)'
-        required: true
-        default: './LuckyUrbanBlitz.ipa'
-      app_identifier:
-        description: 'Bundle ID (e.g. com.example.app)'
-        default: 'com.boydsgames.funspinquests'
-        required: true
 
 jobs:
   upload:
@@ -23,49 +14,26 @@ jobs:
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
-          bundler-cache: true
+          ruby-version: 3.2
 
       - name: Install Fastlane
         run: gem install fastlane --no-document
 
-      - name: Verify IPA exists
-        run: |
-          if [ ! -f "${{ inputs.ipa_path }}" ]; then
-            echo "::error::IPA not found at ${{ inputs.ipa_path }}"
-            exit 1
-          fi
-
-      - name: Create App Store Connect API key
-        env:
-          KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-          ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          KEY_P8: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+      - name: Create API key file
         run: |
           mkdir -p fastlane
-          python3 - <<'PY'
-          import json, os
-          key = os.environ['KEY_P8']
-          data = {
-              "key_id": os.environ['KEY_ID'],
-              "issuer_id": os.environ['ISSUER_ID'],
-              "key": key,
-              "in_house": False,
-          }
-          with open('fastlane/api_key.json', 'w') as f:
-              json.dump(data, f, indent=2)
-              print(data)
-          PY
+          echo "${APP_STORE_CONNECT_API_KEY}" > fastlane/api_key.p8
 
       - name: Upload IPA to App Store
         env:
-          IPA_PATH: ${{ inputs.ipa_path }}
-          APP_IDENTIFIER: ${{ inputs.app_identifier }}
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
+          IPA_PATH: ${{ secrets.IPA_PATH }}
         run: |
-          fastlane deliver \
+          fastlane deliver   \
             --api_key_path fastlane/api_key.json \
             --ipa "$IPA_PATH" \
-            --app_identifier "$APP_IDENTIFIER" \
             --skip_screenshots \
             --skip_metadata \
             --precheck_include_in_app_purchases false \
