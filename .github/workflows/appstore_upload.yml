@@ -4,17 +4,18 @@ on:
   workflow_dispatch:
     inputs:
       ipa_path:
-        description: 'Path to IPA (relative to repo root, e.g. build/MyApp.ipa)'
+        description: 'Path to IPA (relative to repo root)'
         required: true
-        default: './LuckyUrbanBlitz.ipa'
+        default: 'build/MyApp.ipa'
       app_identifier:
-        description: 'Bundle ID (e.g. com.example.app)'
-        default: 'com.boydsgames.funspinquests'
+        description: 'Bundle ID (e.g. com.boydsgames.funspinquest)'
         required: true
 
 jobs:
   upload:
-    runs-on: macos-latest
+    # macos-13 = Intel，绕开 arm64 上 OpenSSL 缺 P-256 曲线这个坑。
+    # 想用 arm64 长期方案见文末。
+    runs-on: macos-13
 
     steps:
       - name: Checkout repository
