@@ -45,7 +45,7 @@ jobs:
           mkdir -p fastlane
           python3 - <<'PY'
           import json, os
-          key = os.environ['KEY_P8'].replace('\n', '\\n')
+          key = os.environ['KEY_P8']
           data = {
               "key_id": os.environ['KEY_ID'],
               "issuer_id": os.environ['ISSUER_ID'],
