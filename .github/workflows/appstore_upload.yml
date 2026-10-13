@@ -4,18 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       ipa_path:
-        description: 'Path to IPA (relative to repo root)'
+        description: 'Path to IPA (relative to repo root, e.g. build/MyApp.ipa)'
         required: true
-        default: 'build/MyApp.ipa'
+        default: './LuckyUrbanBlitz.ipa'
       app_identifier:
-        description: 'Bundle ID (e.g. com.boydsgames.funspinquest)'
+        description: 'Bundle ID (e.g. com.example.app)'
+        default: 'com.boydsgames.funspinquests'
         required: true
 
 jobs:
   upload:
-    # macos-13 = Intel，绕开 arm64 上 OpenSSL 缺 P-256 曲线这个坑。
-    # 想用 arm64 长期方案见文末。
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
       - name: Checkout repository
@@ -55,6 +54,7 @@ jobs:
           }
           with open('fastlane/api_key.json', 'w') as f:
               json.dump(data, f, indent=2)
+              print(data)
           PY
 
       - name: Upload IPA to App Store
