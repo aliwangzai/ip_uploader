@@ -1,0 +1,40 @@
+name: Upload iOS IPA to App Store
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+
+      - name: Install Fastlane
+        run: gem install fastlane --no-document
+
+      - name: Create API key file
+        run: |
+          mkdir -p fastlane
+          echo "${APP_STORE_CONNECT_API_KEY}" > fastlane/api_key.p8
+
+      - name: Upload IPA to App Store
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
+          IPA_PATH: ${{ secrets.IPA_PATH }}
+        run: |
+          fastlane deliver   \
+            --api_key_path fastlane/api_key.json \
+            --ipa "$IPA_PATH" \
+            --skip_screenshots \
+            --skip_metadata \
+            --precheck_include_in_app_purchases false \
+            --force
