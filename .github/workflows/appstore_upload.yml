@@ -6,10 +6,16 @@ on:
       ipa_path:
         description: 'Path to IPA (relative to repo root, e.g. build/MyApp.ipa)'
         required: true
+<<<<<<< HEAD
         default: './LuckyUrbanBlitz.ipa'
       app_identifier:
         description: 'Bundle ID (e.g. com.example.app)'
         default: 'com.boydsgames.funspinquests'
+=======
+        default: 'build/MyApp.ipa'
+      app_identifier:
+        description: 'Bundle ID (e.g. com.example.app)'
+>>>>>>> eaa9489a8063b003e55fe4f301cddcb0805160e5
         required: true
 
 jobs:
