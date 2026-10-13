@@ -23,6 +23,16 @@ jobs:
         run: |
           mkdir -p fastlane
           echo "${APP_STORE_CONNECT_API_KEY}" > fastlane/api_key.p8
+      - name: Create App Store Connect API key
+        run: |
+          cat > fastlane/api_key.json << EOF
+          {
+            "key_id": "${{ secrets.APP_STORE_CONNECT_KEY_ID }}",
+            "issuer_id": "${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}",
+            "key": "${{ secrets.APP_STORE_CONNECT_KEY_PRIVATE_KEY }}",
+            "in_house": false
+          }
+          EOF
 
       - name: Upload IPA to App Store
         env:
