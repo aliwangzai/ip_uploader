@@ -40,7 +40,7 @@ jobs:
         env:
           KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          KEY_P8: ${{ secrets.APP_STORE_CONNECT_KEY_PRIVATE_KEY }}
+          KEY_P8: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
         run: |
           mkdir -p fastlane
           python3 - <<'PY'
