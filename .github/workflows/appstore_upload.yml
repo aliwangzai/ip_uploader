@@ -20,19 +20,9 @@ jobs:
         run: gem install fastlane --no-document
 
       - name: Create API key file
-        env:
-          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
-        # run: |
-        #   mkdir -p fastlane
-        #   echo "$APP_STORE_CONNECT_API_KEY" > fastlane/api_key.p8
-        #   jq -n \
-        #     --arg key_id "$APP_STORE_CONNECT_KEY_ID" \
-        #     --arg issuer_id "$APP_STORE_CONNECT_ISSUER_ID" \
-        #     --rawfile key fastlane/api_key.p8 \
-        #     '{key_id: $key_id, issuer_id: $issuer_id, key: $key, in_house: false}' \
-        #     > fastlane/api_key.json
+        run: |
+          mkdir -p fastlane
+          echo "${APP_STORE_CONNECT_API_KEY}" > fastlane/api_key.p8
 
       - name: Upload IPA to App Store
         env:
